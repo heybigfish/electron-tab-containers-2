@@ -33,8 +33,9 @@ export async function switchTabOnWindow(id: number): Promise<any> {
  * 创建 Tab
  * @param url URL
  */
-export async function createTabOnWindow(url: string): Promise<any> {
-  window.$gnb.$desktop({ type: 'createTabOnWindow', data: { url: url } })
+export async function createTabOnWindow(url: string,type?:string): Promise<any> {
+  window.console.log('🚀 ~ createTabOnWindow ~ type:', type)
+  window.$gnb.$desktop({ type: 'createTabOnWindow', data: { url: url,type, } })
 }
 
 /**
@@ -68,6 +69,8 @@ export function onCloseTab(source: any, callback: (id: number) => void): any {
  * 「监听」Tab Title 变化
  */
 export function onTabTitle(source: any, callback: (id: number, title: string) => void): any {
+  console.log('🚀 ~ onTabTitle ~ source:', source)
+
   GNBEventManager.shared.on(source, 'desktop.onTabTitle', ({ id, title }) => {
     callback(id, title)
   })

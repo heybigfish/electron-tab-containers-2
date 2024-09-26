@@ -4,7 +4,7 @@ import { DesktopService } from './service'
 
 app.whenReady().then(() => {
   DesktopService.shared.init()
-
+  app.commandLine.appendSwitch('ignore-certificate-errors')
   createWindow()
 })
 

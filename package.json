@@ -17,5 +17,8 @@
     "electron-builder": "^24.6.4",
     "typescript": "^5.2.2",
     "vite": "^4.5.0"
+  },
+  "dependencies": {
+    "lowdb": "^7.0.1"
   }
 }

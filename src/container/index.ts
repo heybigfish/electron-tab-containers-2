@@ -47,7 +47,7 @@ class GDContainerManager {
   /**
    * 创建一个 Container
    */
-  public createContainer(url: string, options?: GDWebContainerOptions): GDWebContainer {
+  public createContainer(url: string, type?:string, options?: GDWebContainerOptions): GDWebContainer {
     const webContainer = this.preloads.pop()
     if (!webContainer) {
       throw new Error('Container 创建失败')
@@ -58,7 +58,7 @@ class GDContainerManager {
     //   height: true,
     //   horizontal: true,
     // })
-    webContainer.loadURL(url)
+    webContainer.loadURL(url, type)
     this.containers.set(webContainer.id, webContainer)
     this.preloadContainer()
     return webContainer

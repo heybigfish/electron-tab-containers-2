@@ -1,11 +1,18 @@
-import { BrowserView, BrowserViewConstructorOptions } from 'electron'
+import {
+  BrowserView,
+  BrowserViewConstructorOptions
+} from 'electron'
 import { GNBEventBus } from '../helpers/event-bus'
-import { handleOpenWindow, startDevToolsIfNeed } from '../helpers/web'
+import {
+  handleOpenWindow,
+  startDevToolsIfNeed
+} from '../helpers/web'
 
 /**
  * Web 容器选项
  */
-export interface GDWebContainerOptions extends BrowserViewConstructorOptions {
+export interface GDWebContainerOptions
+  extends BrowserViewConstructorOptions {
   /**
    * 是否使用加载视图
    */
@@ -45,22 +52,33 @@ export class GDWebContainer {
    */
   private url?: string
   /**
+   * 加载地址类型
+   */
+  private urlType?: string
+  /**
    * 是否已初始化
    */
   private initialized = false
 
-  constructor(options: GDWebContainerOptions = {}) {
-    const defaultOptions: GDWebContainerOptions = {
-      useLoadingView: false,
-      useErrorView: false,
-      useHTMLTitleAndIcon: false,
-    }
+  constructor(
+    options: GDWebContainerOptions = {}
+  ) {
+    const defaultOptions: GDWebContainerOptions =
+      {
+        useLoadingView: false,
+        useErrorView: false,
+        useHTMLTitleAndIcon: false
+      }
     this.options = {
       ...defaultOptions,
-      ...options,
+      ...options
     }
-    this.context = new BrowserView(this.options)
-    this.context.setBackgroundColor('rgba(255, 255, 255, 0)')
+    this.context = new BrowserView(
+      this.options
+    )
+    this.context.setBackgroundColor(
+      'rgba(255, 255, 255, 0)'
+    )
     this.id = this.context.webContents.id
   }
 
@@ -68,21 +86,35 @@ export class GDWebContainer {
    * 加载链接
    * @param url 链接
    */
-  public async loadURL(url: string): Promise<void> {
+  public async loadURL(
+    url: string,
+    type?: string
+  ): Promise<void> {
     this.url = url
+    this.urlType = type
     if (!this.initialized) {
       this.setup()
       this.initialized = true
     }
-    this.context.webContents.loadURL(this.url)
+  
+    if (type === 'file') {
+      this.context.webContents.loadFile(
+        this.url
+      )
+    } else {
+      this.context.webContents.loadURL(
+        this.url
+      )
+    }
   }
-
   /**
    * 重新加载
    */
   public reload() {
     if (this.url) {
-      this.context.webContents.loadURL(this.url)
+      this.context.webContents.loadURL(
+        this.url
+      )
     } else {
       this.context.webContents.reload()
     }
@@ -92,10 +124,12 @@ export class GDWebContainer {
    * 设置选项
    * @param options 选项
    */
-  public async setOptions(options: GDWebContainerOptions) {
+  public async setOptions(
+    options: GDWebContainerOptions
+  ) {
     this.options = {
       ...this.options,
-      ...options,
+      ...options
     }
   }
 
@@ -103,12 +137,16 @@ export class GDWebContainer {
    * 执行 JS 方法
    */
   public executeJavaScript(script: string) {
-    if (this.context?.webContents?.isDestroyed()) {
+    if (
+      this.context?.webContents?.isDestroyed()
+    ) {
       return
     }
-    return this.context?.webContents?.executeJavaScript(script).catch((error) => {
-      console.error(error)
-    })
+    return this.context?.webContents
+      ?.executeJavaScript(script)
+      .catch((error) => {
+        console.error(error)
+      })
   }
 
   /**
@@ -133,7 +171,10 @@ export class GDWebContainer {
     this.options.useHTMLTitleAndIcon &&
       GNBEventBus.shared.emit({
         eventName: 'desktop.onTabTitle',
-        data: { id: this.id, title: this.title },
+        data: {
+          id: this.id,
+          title: this.title
+        }
       })
   }
 
@@ -142,21 +183,38 @@ export class GDWebContainer {
     // 配置页面信息
     this.configDocumentInfo()
 
-    this.context.webContents.on('render-process-gone', (_event, details) => {
-      console.error(details)
-    })
+    this.context.webContents.on(
+      'render-process-gone',
+      (_event, details) => {
+        console.error(details)
+      }
+    )
+    this.context.webContents.on(
+      'did-finish-load',
+      (details) => {
+        console.log('did-finish-load~~', details)
+        this.context.webContents.executeJavaScript('console.log(document.title);'); 
+      }
+    )
+    handleOpenWindow(
+      this.context.webContents
+    )
 
-    handleOpenWindow(this.context.webContents)
-
-    startDevToolsIfNeed(this.context.webContents)
+    startDevToolsIfNeed(
+      this.context.webContents
+    )
   }
 
   private configDocumentInfo() {
-    this.context.webContents.on('dom-ready', async () => {
-      const title = this.context.webContents.getTitle()
-      if (!this.title && title) {
-        this.title = title
+    this.context.webContents.on(
+      'dom-ready',
+      async () => {
+        const title =
+          this.context.webContents.getTitle()
+        if (!this.title && title) {
+          this.title = title
+        }
       }
-    })
+    )
   }
 }

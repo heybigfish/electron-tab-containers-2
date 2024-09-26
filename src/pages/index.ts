@@ -89,8 +89,8 @@ export class GDTabPageContainer {
    * 创建 Tab 页
    * @param url URL
    */
-  public createTab(url: string) {
-    const container = GDContainerManager.shared.createContainer(url, {
+  public createTab(url: string,type?:string) {
+    const container = GDContainerManager.shared.createContainer(url,type, {
       useHTMLTitleAndIcon: true,
       useLoadingView: true,
       useErrorView: true,

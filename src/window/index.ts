@@ -9,6 +9,7 @@ export function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
+    frame: false, // 无边框窗口  
     webPreferences: {
       preload: getPreloadPath(),
     },
