@@ -103,10 +103,10 @@ tabGroup.on('click-add-button', () => {
   }
 })
 
-createTabOnWindow('https://www.gaoding.com')
+// createTabOnWindow('https://www.gaoding.com')
 
-createTabOnWindow('https://www.gaoding.com')
+// createTabOnWindow('https://www.gaoding.com')
 
-const fileBasePath = "../src/pages/"
-const filePath = 'file://' + fileBasePath + '/demo.html'
-createTabOnWindow(filePath, 'file') 
+// const fileBasePath = "../src/pages/"
+// const filePath = 'file://' + fileBasePath + '/demo.html'
+// createTabOnWindow(filePath, 'file') 
