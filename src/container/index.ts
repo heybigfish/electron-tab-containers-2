@@ -3,7 +3,6 @@ import { BrowserViewConstructorOptions } from 'electron'
 import { getSendEventJS, getPreloadPath, kContainerIdsKey } from '../helpers/web'
 import { GNBEventBus } from '../helpers/event-bus'
 import { eventKey } from '../const'
-
 /**
  * 最大预加载容器数量
  */
@@ -25,7 +24,7 @@ class GDContainerManager {
   /**
    * 预加载缓存的 Containers
    */
-  private readonly preloads: GDWebContainer[]
+  readonly preloads: GDWebContainer[]
   /**
    * 已存在的 containers <id, GDWebContainer>
    */
@@ -71,7 +70,12 @@ class GDContainerManager {
   public getContainer(id: number): GDWebContainer | undefined {
     return this.containers.get(id)
   }
-
+  /**
+   * 获取所有容器
+   */
+  public getAllContainer(): Map<number, GDWebContainer> {
+    return this.containers
+  }
   /**
    * 移除 Container
    * @param url

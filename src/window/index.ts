@@ -2,6 +2,7 @@ import {
   BrowserWindow,
   ipcMain
 } from 'electron'
+import  GDContainerManager  from '../container'
 import {
   getPreloadPath,
   getSendEventJS,
@@ -10,6 +11,7 @@ import {
 } from '../helpers/web'
 import { GNBEventBus } from '../helpers/event-bus'
 import { eventKey } from '../const'
+import { GDTabPageContainer } from '../pages'
 
 export let mainWindow: BrowserWindow
 
@@ -37,7 +39,13 @@ export function createWindow() {
   ipcMain.on('close', (event) => {
     win.close();
   })
-
+  ipcMain.on('insert', (event) => {
+    const containers = GDContainerManager.shared.getAllContainer()!
+    const activeContainerId = GDTabPageContainer.shared.getActiveTabId()!
+    const activeContainer = containers.get(activeContainerId)
+    console.log('🚀 ~ ipcMain.on ~ activeContainer:', activeContainer)
+    activeContainer.context.webContents.executeJavaScript('document.querySelector(".el-input").querySelector("input").value = 6655'); 
+  })
   const handler = (data: any) => {
     win.webContents?.executeJavaScript(
       getSendEventJS(eventKey, data)

@@ -8,7 +8,7 @@ import { mainWindow } from '../window'
 /**
  * Tab 栏高度
  */
-const subPageTabHeight = 40
+const subPageTabHeight = 65
 
 const FRAME_READY = 'FRAME_READY'
 
@@ -17,6 +17,7 @@ const FRAME_READY = 'FRAME_READY'
  */
 export class GDTabPageContainer {
   private static instance: GDTabPageContainer
+  private activeContainerId: number
 
   static get shared(): GDTabPageContainer {
     if (!GDTabPageContainer.instance) {
@@ -50,6 +51,12 @@ export class GDTabPageContainer {
 
   // ================ Public Methods ================= //
   /**
+   * 当前激活的页签id
+   */
+  public getActiveTabId(): number {
+    return this.activeContainerId
+  }
+  /**
    * 切换 Tab 页
    * @param url URL
    */
@@ -69,6 +76,7 @@ export class GDTabPageContainer {
    */
   public async switchTabWithId(id: number, notify = true): Promise<GDWebContainer> {
     console.log(`触发 Tab 切换 id: ${id}`)
+    this.activeContainerId = id
     if (notify) {
       GNBEventBus.shared.emit({
         eventName: 'desktop.onSwitchTab',
@@ -285,7 +293,7 @@ export class GDTabPageContainer {
       x: 0,
       y: subPageTabHeight,
       width: this.window.getBounds().width || 1024,
-      height: (this.window.getBounds().height || 768) - subPageTabHeight,
+      height: (this.window.getBounds().height || 768) - subPageTabHeight -5,
     })
   }
 }

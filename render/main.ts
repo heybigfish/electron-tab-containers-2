@@ -95,15 +95,16 @@ tabGroup.on('tab-active', (tab: Tab) => {
 
 tabGroup.on('click-add-button', () => {
   try {
-    const fileBasePath = "../src/pages/"
-    const filePath = 'file://' + fileBasePath + '/demo.html'
-    createTabOnWindow(filePath, 'file') 
+    // const fileBasePath = "../src/pages/"
+    // const filePath = 'file://' + fileBasePath + '/demo.html'
+    // createTabOnWindow(filePath, 'file') 
+    createTabOnWindow('https://etax.ningbo.chinatax.gov.cn:8443/')
   } catch (error) {
     console.log('🚀 ~ tabGroup.on ~ error:', error)
   }
 })
 
-// createTabOnWindow('https://www.gaoding.com')
+createTabOnWindow('https://etax.ningbo.chinatax.gov.cn:8443/')
 
 // createTabOnWindow('https://www.gaoding.com')
 
