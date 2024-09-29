@@ -1,6 +1,13 @@
-import { GDWebContainer, GDWebContainerOptions } from './container'
+import {
+  GDWebContainer,
+  GDWebContainerOptions
+} from './container'
 import { BrowserViewConstructorOptions } from 'electron'
-import { getSendEventJS, getPreloadPath, kContainerIdsKey } from '../helpers/web'
+import {
+  getSendEventJS,
+  getPreloadPath,
+  kContainerIdsKey
+} from '../helpers/web'
 import { GNBEventBus } from '../helpers/event-bus'
 import { eventKey } from '../const'
 /**
@@ -16,7 +23,8 @@ class GDContainerManager {
 
   static get shared(): GDContainerManager {
     if (!GDContainerManager.instance) {
-      GDContainerManager.instance = new GDContainerManager()
+      GDContainerManager.instance =
+        new GDContainerManager()
     }
     return GDContainerManager.instance
   }
@@ -28,7 +36,10 @@ class GDContainerManager {
   /**
    * 已存在的 containers <id, GDWebContainer>
    */
-  private readonly containers: Map<number, GDWebContainer>
+  private readonly containers: Map<
+    number,
+    GDWebContainer
+  >
   /**
    * 全局选项
    */
@@ -46,19 +57,27 @@ class GDContainerManager {
   /**
    * 创建一个 Container
    */
-  public createContainer(url: string, type?:string, options?: GDWebContainerOptions): GDWebContainer {
+  public createContainer(
+    url: string,
+    type?: string,
+    options?: GDWebContainerOptions
+  ): GDWebContainer {
     const webContainer = this.preloads.pop()
     if (!webContainer) {
       throw new Error('Container 创建失败')
     }
-    options && webContainer.setOptions(options)
+    options &&
+      webContainer.setOptions(options)
     // webContainer.context.setAutoResize({
     //   width: true,
     //   height: true,
     //   horizontal: true,
     // })
     webContainer.loadURL(url, type)
-    this.containers.set(webContainer.id, webContainer)
+    this.containers.set(
+      webContainer.id,
+      webContainer
+    )
     this.preloadContainer()
     return webContainer
   }
@@ -67,13 +86,18 @@ class GDContainerManager {
    * 通过 ID 获取容器
    * @param id 容器 ID
    */
-  public getContainer(id: number): GDWebContainer | undefined {
+  public getContainer(
+    id: number
+  ): GDWebContainer | undefined {
     return this.containers.get(id)
   }
   /**
    * 获取所有容器
    */
-  public getAllContainer(): Map<number, GDWebContainer> {
+  public getAllContainer(): Map<
+    number,
+    GDWebContainer
+  > {
     return this.containers
   }
   /**
@@ -81,7 +105,9 @@ class GDContainerManager {
    * @param url
    */
   public removeContainer(id: number): void {
-    this.containers.get(id)?.context.webContents.close()
+    this.containers
+      .get(id)
+      ?.context.webContents.close()
     this.containers.delete(id)
   }
 
@@ -96,16 +122,25 @@ class GDContainerManager {
    * 发送事件通知容器
    */
   public listenGNBEvents() {
-    GNBEventBus.shared.subscribe((data: any) => {
-      for (const [id, container] of this.containers) {
-        const dataInfo = data?.data || {}
-        const containerIds = dataInfo[kContainerIdsKey]
-        if (!containerIds || containerIds?.includes(id)) {
-          // 如果是定向传输，过滤不在容器列表里的
-          container?.executeJavaScript(getSendEventJS(eventKey, data))
+    GNBEventBus.shared.subscribe(
+      (data: any) => {
+        for (const [id, container] of this
+          .containers) {
+          const dataInfo = data?.data || {}
+          const containerIds =
+            dataInfo[kContainerIdsKey]
+          if (
+            !containerIds ||
+            containerIds?.includes(id)
+          ) {
+            // 如果是定向传输，过滤不在容器列表里的
+            container?.executeJavaScript(
+              getSendEventJS(eventKey, data)
+            )
+          }
         }
       }
-    })
+    )
   }
 
   // ================ Private Methods ================= //
@@ -113,9 +148,13 @@ class GDContainerManager {
    * 预加载 Container
    */
   private preloadContainer() {
-    const count = MAX_PRELOAD_CONTAINER_COUNT - this.preloads.length
+    const count =
+      MAX_PRELOAD_CONTAINER_COUNT -
+      this.preloads.length
     for (let i = 0; i < count; i++) {
-      const view = new GDWebContainer(this.globalOptions)
+      const view = new GDWebContainer(
+        this.globalOptions
+      )
       this.preloads.push(view)
     }
     console.log(
@@ -131,7 +170,8 @@ class GDContainerManager {
       webPreferences: {
         preload: getPreloadPath(),
         nodeIntegrationInSubFrames: true,
-      },
+        webSecurity: false //禁用同源策略
+      }
     }
   }
 }

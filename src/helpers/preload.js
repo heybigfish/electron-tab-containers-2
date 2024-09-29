@@ -7,5 +7,8 @@ contextBridge.exposeInMainWorld('$gnb', {
   },  
   $maximize: () => ipcRenderer.send('maximize'),  
   $close: () => ipcRenderer.send('close'), 
-  $insert: () => ipcRenderer.send('insert') 
+
+  $dialog: (info) => ipcRenderer.send('dialog',{
+    info
+  })
 })

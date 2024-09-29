@@ -98,16 +98,15 @@ tabGroup.on('click-add-button', () => {
     // const fileBasePath = "../src/pages/"
     // const filePath = 'file://' + fileBasePath + '/demo.html'
     // createTabOnWindow(filePath, 'file') 
-    createTabOnWindow('https://etax.ningbo.chinatax.gov.cn:8443/')
+    // createTabOnWindow('http://localhost:9080/#/common')
+    createTabOnWindow('https://www.gaoding.com')
   } catch (error) {
     console.log('🚀 ~ tabGroup.on ~ error:', error)
   }
 })
-
+// createTabOnWindow('http://localhost:9080/#/common')
 createTabOnWindow('https://etax.ningbo.chinatax.gov.cn:8443/')
-
 // createTabOnWindow('https://www.gaoding.com')
-
 // const fileBasePath = "../src/pages/"
 // const filePath = 'file://' + fileBasePath + '/demo.html'
 // createTabOnWindow(filePath, 'file') 

@@ -5,6 +5,8 @@ import { DesktopService } from './service'
 app.whenReady().then(() => {
   DesktopService.shared.init()
   app.commandLine.appendSwitch('ignore-certificate-errors')
+  // 解决iframe跨域问题。
+  app.commandLine.appendSwitch("disable-site-isolation-trials");
   createWindow()
 })
 
