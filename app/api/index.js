@@ -1,4 +1,4 @@
-import request from "@/utils/request"
+import request from "../utils/request"
 export function apiTest(data) {
   return request({
     url: "/api-portal/article/articleList",

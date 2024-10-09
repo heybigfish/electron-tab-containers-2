@@ -4,6 +4,8 @@ import GDContainerManager from '../container'
 import { BrowserView, BrowserWindow } from 'electron'
 import { GDWebContainer } from '../container/container'
 import { mainWindow } from '../window'
+import  { TabChangeInfo }  from '../helpers/tab-bus'
+import { getHttpDataLocal } from '../window/webContents'
 
 /**
  * Tab 栏高度
@@ -11,6 +13,7 @@ import { mainWindow } from '../window'
 const subPageTabHeight = 65
 
 const FRAME_READY = 'FRAME_READY'
+
 
 /**
  * 页面容器管理
@@ -76,6 +79,7 @@ export class GDTabPageContainer {
    */
   public async switchTabWithId(id: number, notify = true): Promise<GDWebContainer> {
     console.log(`触发 Tab 切换 id: ${id}`)
+
     this.activeContainerId = id
     if (notify) {
       GNBEventBus.shared.emit({
@@ -90,6 +94,10 @@ export class GDTabPageContainer {
     this.window.show()
     this.window.focus()
     container.context.webContents.focus()
+    mainWindow.webContents.send('showTools', {
+      id: id,
+      url: container.getURL()
+    })
     return container
   }
 
@@ -110,6 +118,7 @@ export class GDTabPageContainer {
       eventName: 'desktop.onCreateTab',
       data: { id: container.id },
     })
+    getHttpDataLocal(container.context)
     return container
   }
 

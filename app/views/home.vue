@@ -6,6 +6,7 @@
         <div
           class="app-action-button"
           @click="edit"
+          v-show="showTools"
         >
           操作
         </div>
@@ -41,12 +42,10 @@
 
 <script setup>
 import SvgIcon from '@/components/SvgIcon.vue'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { apiTest } from '@/api'
-// import { createDialogWindow } from '../../src/window/index'
-
-// import { dialog } from "electron"
-// const { dialog } = require('electron')
+import { setTabGroup } from '../../render/main.ts'
+const showTools = ref(true)
 const minimize = () => {
   window.$gnb.$minimize()
 }
@@ -56,29 +55,27 @@ const maximize = () => {
 const close = () => {
   window.$gnb.$close()
 }
-const edit =async () => {
+const edit = async () => {
   const res = await apiTest({
-    pageNum:1,
-    pageSize:10,
+    pageNum: 1,
+    pageSize: 10
   })
   const data = res.data.data.records
   window.$gnb.$dialog(JSON.stringify(data))
 }
-onMounted(() => {
-  const script =
-    document.createElement('script')
-  script.src = './render/main.ts'
-  script.type = 'module'
-  script.onload = () => {
-    console.log('第三方库加载成功')
-    // 可以在这里调用第三方库提供的方法
-  }
-  script.onerror = () => {
-    console.error('第三方库加载失败')
-  }
+// vue实例对象
 
-  // 将script标签添加到head或body中
-  document.head.appendChild(script)
+onMounted(() => {
+  window.$gnb.$showTools((data) => {
+    console.log('🚀 ~ window.$gnb.$showTools ~ data:', data)
+    // showTools.value = false
+    if(data.url&& data.url ==='https://etax.ningbo.chinatax.gov.cn:8443/'){
+      showTools.value = true
+    }else{
+      showTools.value = false
+    }
+  })
+  setTabGroup()
 })
 </script>
 

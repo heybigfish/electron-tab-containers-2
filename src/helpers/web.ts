@@ -1,7 +1,7 @@
 import { WebContents } from 'electron'
 import path from 'path'
 import { GDTabPageContainer } from '../pages'
-import { app } from 'electron/main'
+import { app } from 'electron'
 
 /**
  * 容器 ID 集合字段

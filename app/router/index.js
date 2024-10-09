@@ -6,7 +6,7 @@ import {
 import { constRouter } from "./route"
 
 const router = createRouter({
-  history: createWebHashHistory(""),
+  history: createWebHashHistory("/"),
   routes: constRouter,
   // 刷新时，滚动条位置还原
   scrollBehavior: () => ({ left: 0, top: 0 }),

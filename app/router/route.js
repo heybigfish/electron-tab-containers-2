@@ -5,7 +5,7 @@
  */
 export const constRouter = [
   {
-    path: "/home",
+    path: "/",
     meta: { title: "首页", icon: "", isShow: false },
     component: () => import("@/views/home.vue"),
   },

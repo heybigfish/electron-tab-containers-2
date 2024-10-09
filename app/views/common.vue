@@ -95,18 +95,20 @@ export default {
     }
 
     onMounted(() => {
-      console.log("onMounted");
+      console.log('onMounted')
       getData()
       // 这与在模板或计算属性中直接使用 `this` 相似
     })
     onUnmounted(() => {
-      console.log("onUnmounted");
+      console.log('onUnmounted')
       window.$cgnb.$closeChild('destory')
       window.$cgnb.$queryData('destory')
       window.$cgnb.$selectData('', 'destory')
     })
 
     const close = () => {
+      console.log('close')
+
       window.$cgnb.$closeChild()
     }
     return {

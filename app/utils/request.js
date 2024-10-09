@@ -1,9 +1,8 @@
 
 import axios from "axios"
-import { sendErrorMsg } from "@/utils/common"
 
 const service = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://www.cfbrain.com.cn/',
   timeout: 5000,
 })
 
@@ -29,10 +28,6 @@ service.interceptors.response.use(
     // 这里处理后端返回数据,需要根据实际情况做处理
     if (response.data.code !== "000000") {
       // message("error", response.data.message)
-      sendErrorMsg({
-        code: response.data.code,
-        message: response.data.message,
-      })
       return
     }
     if (registerRequest.length > 0) {
@@ -51,10 +46,7 @@ service.interceptors.response.use(
     return response.data
   },
   (err) => {
-    sendErrorMsg({
-      code: err.response.status,
-      message: "网络问题",
-    })
+    alert("网络问题")
     return Promise.reject(new Error(err))
   },
 )

@@ -10,5 +10,8 @@ contextBridge.exposeInMainWorld('$gnb', {
 
   $dialog: (info) => ipcRenderer.send('dialog',{
     info
+  }),
+  $showTools: (cb,ctx) => ipcRenderer.on('showTools',(event,data)=>{
+    cb(data)
   })
 })

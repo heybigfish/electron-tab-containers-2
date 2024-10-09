@@ -20,54 +20,60 @@ export function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
+    show: false,
     frame: false, // 无边框窗口
     webPreferences: {
       preload: getPreloadPath(),
-      contextIsolation: true,
+      contextIsolation: true, //
       webSecurity: false //禁用同源策略
     }
   })
 
-  win.loadURL('http://localhost:9080/#/home')
-  const { session } = win.webContents
-  // 为会话添加请求的监听器
-  session.webRequest.onBeforeRequest(
-    (details, callback) => {
-      // console.log('请求地址:', details.url, '请求类型:', details)
-      // 在这里可以做更多的处理，例如修改请求头、取消请求等
-      callback({ cancel: false }) // 允许请求继续
-    }
-  )
-  // 为会话添加请求的监听器
-  session.webRequest.onCompleted(
-    (details) => {
-      // console.log('请求完成:', details)
-      // 在这里可以做更多的处理，例如修改请求头、取消请求等
-    }
-  )
-  session.webRequest.onHeadersReceived(
-    { urls: ['*://*/*'] },
-    (d, c) => {
-      if (
-        d.responseHeaders['X-Frame-Options']
-      ) {
-        delete d.responseHeaders[
-          'X-Frame-Options'
-        ]
-      } else if (
-        d.responseHeaders['x-frame-options']
-      ) {
-        delete d.responseHeaders[
-          'x-frame-options'
-        ]
-      }
+  win.loadURL('http://localhost:9080/#/')
 
-      c({
-        cancel: false,
-        responseHeaders: d.responseHeaders
-      })
-    }
-  )
+  // const fileBasePath = '../dist'
+  // const filePath =
+  //   'file://' + fileBasePath + '/index.html'
+  // win.loadFile(filePath)
+  // const { session } = win.webContents
+  // // 为会话添加请求的监听器
+  // session.webRequest.onBeforeRequest(
+  //   (details, callback) => {
+  //     console.log('请求地址:', details.url, '请求类型:', details)
+  //     // 在这里可以做更多的处理，例如修改请求头、取消请求等
+  //     callback({ cancel: false }) // 允许请求继续
+  //   }
+  // )
+  // // 为会话添加请求的监听器
+  // session.webRequest.onCompleted(
+  //   (details) => {
+  //     console.log('请求完成:', details)
+  //     // 在这里可以做更多的处理，例如修改请求头、取消请求等
+  //   }
+  // )
+  // session.webRequest.onHeadersReceived(
+  //   { urls: ['*://*/*'] },
+  //   (d, c) => {
+  //     if (
+  //       d.responseHeaders['X-Frame-Options']
+  //     ) {
+  //       delete d.responseHeaders[
+  //         'X-Frame-Options'
+  //       ]
+  //     } else if (
+  //       d.responseHeaders['x-frame-options']
+  //     ) {
+  //       delete d.responseHeaders[
+  //         'x-frame-options'
+  //       ]
+  //     }
+
+  //     c({
+  //       cancel: false,
+  //       responseHeaders: d.responseHeaders
+  //     })
+  //   }
+  // )
   ipcMain.on('minimize', (event) => {
     win.minimize()
   })
@@ -94,6 +100,11 @@ export function createWindow() {
   startDevToolsIfNeed(win.webContents)
 
   mainWindow = win
+
+  win.once('ready-to-show', () => {
+    win.show();
+  });
+
 }
 function createDialogWindow(info) {
   const childWindow = new BrowserWindow({
@@ -108,7 +119,9 @@ function createDialogWindow(info) {
     frame: false, // 无边框窗口
     webPreferences: {
       preload: getDialogPreloadPath(),
-      nodeIntegration: true //默认是false
+      nodeIntegration: true, //默认是false
+      webSecurity: false, //禁用同源策略
+      contextIsolation: true, //
     }
   })
   // 为当前窗口创建一个唯一的监听器
@@ -119,23 +132,30 @@ function createDialogWindow(info) {
   const temp = new Date().getTime()
   childWindow.loadURL(
     'http://localhost:9080/#/common#' + temp,
-    {
-      postData: info
-    }
   )
-  const { session } = childWindow.webContents
+  // const fileBasePath = '../dist'
+  // const filePath =
+  //   'file://' +
+  //   fileBasePath +
+  //   '/index.html/#/common'
+  // childWindow.loadURL(filePath)
+
 
   childWindow.webContents.send('getData', {
     info
   })
 
   childWindow.on('close', (event) => {
-    const listener = windows.get(childWindow);  
-    if (listener) {  
-      ipcMain.removeAllListeners('closeChild'); // 注意：这里的移除方式可能需要根据实际情况调整  
-      ipcMain.removeAllListeners('selectData'); // 注意：这里的移除方式可能需要根据实际情况调整  
-      windows.delete(childWindow);  
-    } 
+    const listener = windows.get(childWindow)
+    if (listener) {
+      ipcMain.removeAllListeners(
+        'closeChild'
+      ) // 注意：这里的移除方式可能需要根据实际情况调整
+      ipcMain.removeAllListeners(
+        'selectData'
+      ) // 注意：这里的移除方式可能需要根据实际情况调整
+      windows.delete(childWindow)
+    }
   })
   ipcMain.on('closeChild', (event, type) => {
     childWindow.close()

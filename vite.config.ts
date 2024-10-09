@@ -2,12 +2,13 @@ import { defineConfig } from 'vite'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import path from 'path';
 import { fileURLToPath, URL } from "node:url"
+import electron from 'vite-plugin-electron/simple'
 
 import vue from '@vitejs/plugin-vue'
 console.log("process.cwd()",process.cwd());
 
 export default defineConfig({
-  base: './render',
+  // base: './',
   server: {
     port: 9080,
     proxy: {
@@ -35,6 +36,27 @@ export default defineConfig({
       ],
       // 指定symbolId格式
       symbolId: 'icon-[name]'
-    })
-  ]
+    }),
+    electron({
+      main: {
+        // Shortcut of `build.lib.entry`.
+        entry: 'src/main.ts',
+      },
+      preload: {
+        // Shortcut of `build.rollupOptions.input`.
+        // Preload scripts may contain Web assets, so use the `build.rollupOptions.input` instead `build.lib.entry`.
+        input: path.join(__dirname, 'src/helpers/preload.js'),
+      },
+    }),
+  ],
+  build: {
+    rollupOptions: {
+      // 静态资源分类打包
+      output: {
+        chunkFileNames: "static/js/[name]-[hash].js",
+        entryFileNames: "static/js/[name]-[hash].js",
+        assetFileNames: "static/[ext]/[name]-[hash].[ext]",
+      },
+    },
+  },
 })

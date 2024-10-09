@@ -31,4 +31,8 @@ export class GNBEventBus {
       handler.apply(null, args)
     })
   }
+  // tab变化时，注册事件
+  registerTabChangeEvent(cb) {
+    GNBEventBus.shared.subscribe(cb)
+  }
 }

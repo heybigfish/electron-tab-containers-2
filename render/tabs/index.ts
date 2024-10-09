@@ -75,8 +75,8 @@ class TabGroup extends HTMLElement {
     this.options = {
       closeButtonText: this.getAttribute('close-button-text') || '&#215;',
       defaultTab: { title: 'New Tab', active: true },
-      newTabButton: !!this.getAttribute('new-tab-button') === true || false,
-      newTabButtonText: this.getAttribute('new-tab-button-text') || '&#65291;',
+      newTabButton: false,
+      newTabButtonText: '+',
       visibilityThreshold: Number(this.getAttribute('visibility-threshold')) || 0,
     }
 
